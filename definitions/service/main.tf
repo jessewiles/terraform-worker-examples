@@ -1,21 +1,21 @@
 data "aws_ami" "service" {
-    most_recent = true
-    owners = ["amazon", "aws-marketplace"]
+  most_recent = true
+  owners      = ["amazon", "aws-marketplace"]
 
-    filter {
-        name = "name"
-        values = [var.ami_name]
-    }
+  filter {
+    name   = "name"
+    values = [var.ami_name]
+  }
 
-    filter {
-        name   = "root-device-type"
-        values = ["ebs"]
-    }
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
 
-    filter {
-        name   = "virtualization-type"
-        values = ["hvm"]
-    }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
 
 }
 
@@ -27,12 +27,12 @@ module "service" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "2.15.0"
 
-  name = format("%s-%s", var.deployment, var.name)
-  ami = data.aws_ami.service.id
-  instance_type = var.instance_type
-  instance_count = length(local.subnets) * local.prod_modifier
+  name                        = format("%s-%s", var.deployment, var.name)
+  ami                         = data.aws_ami.service.id
+  instance_type               = var.instance_type
+  instance_count              = length(local.subnets) * local.prod_modifier
   associate_public_ip_address = false
-  subnet_ids = local.subnets
+  subnet_ids                  = local.subnets
 
 
   root_block_device = [
@@ -42,6 +42,6 @@ module "service" {
     },
   ]
 
-  tags = merge(local.tags, var.extra_tags, {"service": var.name})
+  tags = merge(local.tags, var.extra_tags, { "service" : var.name })
 
 }
