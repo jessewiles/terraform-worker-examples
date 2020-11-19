@@ -1,0 +1,75 @@
+terraform:
+
+  # global level variables, these are supplied to all definitions
+  terraform_vars:
+    # a variable named: `deployment` is populated always, matching the name of the deployment passed on CLI
+    region: {{ aws_region }}
+    environment: {{ var.environment }}
+
+  definitions:
+    tags:
+      path: /definitions/misc-tags
+    
+
+{% if var.environment == "prod" %}
+    # network creates a VPC and required resources to launch instances
+    network:
+      path: /definitions/vpc-existing
+      terraform_vars:
+        vpc_id: vpc-04f85847b5a50fca1
+{% else %}
+    # network creates a VPC and required resources to launch instances
+    network:
+      path: /definitions/vpc-new/
+      remote_vars:
+        tags: tags.outputs.tag_map
+{% endif %} 
+
+    # deploy the application gateway
+    gateway:
+      path: /definitions/service
+      terraform_vars:
+        name: new-app-gateway
+        public_ip: true
+      remote_vars:
+        tags: tags.outputs.tag_map
+        subnets: network.outputs.public_subnets
+
+    # deploy the application
+    backend:
+      path: /definitions/service
+      terraform_vars:
+        name: new-app-backend
+      remote_vars:
+        tags: tags.outputs.tag_map
+        subnets: network.outputs.public_subnets
+
+{% if var.environment == "prod" %}
+    # manage the legacy application too
+    legacy:
+      path: /definitions/service
+      terraform_vars:
+        name: old-app
+        instance_type: c5.large
+        public_ip: true
+        ami_name: ubuntu/images/*/ubuntu-xenial-*-amd64-server-*
+      remote_vars:
+        tags: tags.outputs.tag_map
+        subnets: network.outputs.public_subnets
+{% endif %}
+
+  # We're cleaning this up so providers/plugins isn't duplicated!
+  providers:
+    aws:
+      vars:
+        version: "~> 3.0"
+        region: {{ aws_region }}
+    'null':
+      vars:
+        version: "~> 3.0.0"
+
+  plugins:
+    aws:
+      version: 3.16.0
+    'null':
+      version: 3.0.0
