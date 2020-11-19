@@ -79,7 +79,8 @@ This is a unified configuration file, that can be executed against the same depl
 
 for a dev deployment that matches the development config above:
 ```
-worker --config-var environment=dev \
+worker \
+  --config-var environment=dev \
   --config-file worker-single.yaml \
   --backend s3 \
   --backend-region us-west-2 \
@@ -93,7 +94,8 @@ worker --config-var environment=dev \
 
 for a prod deployment that matches the production config above:
 ```
-worker --config-var environment=dev \
+worker \
+  --config-var environment=dev \
   --config-file worker-single.yaml \
   --backend s3 \
   --backend-region us-west-2 \
