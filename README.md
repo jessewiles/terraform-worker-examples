@@ -28,8 +28,7 @@ worker \
   --backend-region us-west-2 \
   --aws-region us-west-2 \
   --backend-bucket s3bucket \
-  terraform \
-  example-dev \
+  terraform example-dev \
   --show-output \
   --terraform-bin ~/bin/terraform \
   --apply
@@ -46,8 +45,7 @@ worker \
   --backend-region us-west-2 \
   --aws-region us-east-2 \
   --backend-bucket s3bucket \
-  terraform \
-  example-vpc \
+  terraform example-vpc \
   --show-output \
   --terraform-bin ~/bin/terraform \
   --apply
