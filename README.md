@@ -10,6 +10,9 @@ It highlights a few of the key features of the terraform worker:
 
 The examples are all AWS specific, but the same logic and rules can also be leveraged using any provider, with either the AWS or GCP state backends supported by terraform (more to come!)
 
+# terraform 13+ support
+Terraform 13 introduced a significant change to how modules and providers are configured, the worker works with both terraform 12 and 13 (untested with 14), however with 13 the plugins are required to be defined in each definition instead of the configuration, and since the providers specified in the configuration are shared between all definitions, it requires adding plugin requirements to definitions even if that definition does not use the provider. Ultimately this will lead to simpler configuration / handling but not yet!
+
 ## the examples
 These are very simple examples! They don't include any host configuration or security management etc...
 

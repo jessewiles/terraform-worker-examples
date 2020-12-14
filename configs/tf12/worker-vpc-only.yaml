@@ -8,11 +8,11 @@ terraform:
 
   definitions:
     tags:
-      path: /definitions/misc-tags
+      path: /definitions/tf12/misc-tags
     
     # network creates a VPC and required resources to launch instances
     network:
-      path: /definitions/vpc-new
+      path: /definitions/tf12/vpc-new
       remote_vars:
         tags: tags.outputs.tag_map
 

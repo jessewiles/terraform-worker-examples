@@ -8,26 +8,26 @@ terraform:
 
   definitions:
     tags:
-      path: /definitions/misc-tags
+      path: /definitions/tf12/misc-tags
     
 
 {% if var.environment == "prod" %}
     # network creates a VPC and required resources to launch instances
     network:
-      path: /definitions/vpc-existing
+      path: /definitions/tf12/vpc-existing
       terraform_vars:
         vpc_id: vpc-04f85847b5a50fca1
 {% else %}
     # network creates a VPC and required resources to launch instances
     network:
-      path: /definitions/vpc-new/
+      path: /definitions/tf12/vpc-new/
       remote_vars:
         tags: tags.outputs.tag_map
 {% endif %} 
 
     # deploy the application gateway
     gateway:
-      path: /definitions/service
+      path: /definitions/tf12/service
       terraform_vars:
         name: new-app-gateway
         public_ip: true
@@ -37,7 +37,7 @@ terraform:
 
     # deploy the application
     backend:
-      path: /definitions/service
+      path: /definitions/tf12/service
       terraform_vars:
         name: new-app-backend
       remote_vars:
@@ -47,7 +47,7 @@ terraform:
 {% if var.environment == "prod" %}
     # manage the legacy application too
     legacy:
-      path: /definitions/service
+      path: /definitions/tf12/service
       terraform_vars:
         name: old-app
         instance_type: c5.large
