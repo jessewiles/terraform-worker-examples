@@ -4,21 +4,21 @@ terraform:
   terraform_vars:
     # a variable named: `deployment` is populated always, matching the name of the deployment passed on CLI
     region: {{ aws_region }}
-    environment: prod
+    environment: dev
 
   definitions:
     tags:
-      path: /definitions/misc-tags
+      path: /definitions/tf13/misc-tags
     
     # network creates a VPC and required resources to launch instances
     network:
-      path: /definitions/vpc-existing
-      terraform_vars:
-        vpc_id: vpc-04f85847b5a50fca1
+      path: /definitions/tf13/vpc-new/
+      remote_vars:
+        tags: tags.outputs.tag_map
 
     # deploy the application gateway
     gateway:
-      path: /definitions/service
+      path: /definitions/tf13/service
       terraform_vars:
         name: new-app-gateway
         public_ip: true
@@ -28,21 +28,9 @@ terraform:
 
     # deploy the application
     backend:
-      path: /definitions/service
+      path: /definitions/tf13/service
       terraform_vars:
         name: new-app-backend
-      remote_vars:
-        tags: tags.outputs.tag_map
-        subnets: network.outputs.public_subnets
-
-    # manage the legacy application too
-    legacy:
-      path: /definitions/service
-      terraform_vars:
-        name: old-app
-        instance_type: c5.large
-        public_ip: true
-        ami_name: ubuntu/images/*/ubuntu-xenial-*-amd64-server-*
       remote_vars:
         tags: tags.outputs.tag_map
         subnets: network.outputs.public_subnets
@@ -56,9 +44,3 @@ terraform:
     'null':
       vars:
         version: "~> 3.0.0"
-
-  plugins:
-    aws:
-      version: 3.16.0
-    'null':
-      version: 3.0.0
