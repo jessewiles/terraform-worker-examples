@@ -10,11 +10,6 @@ terraform:
     tags:
       path: /definitions/tf13/misc-tags
 
-    new_ami:
-      path: /definitions/tf13/new-ami
-      remote_vars:
-        tags: tags.outputs.tag_map
-
     # network creates a VPC and required resources to launch instances
     network:
       path: /definitions/tf13/vpc-new/
