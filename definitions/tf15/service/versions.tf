@@ -6,10 +6,5 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 3.16.0"
     }
-
-    kubectl = {
-      source  = "hashicorp/kubectl"
-      version = "1.9.4"
-    }
   }
 }
