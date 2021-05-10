@@ -1,0 +1,54 @@
+terraform:
+
+  # global level variables, these are supplied to all definitions
+  terraform_vars:
+    # a variable named: `deployment` is populated always, matching the name of the deployment passed on CLI
+    region: {{ aws_region }}
+    environment: dev
+
+  definitions:
+    tags:
+      path: /definitions/tf13/misc-tags
+
+    new_ami:
+      path: /definitions/tf13/new-ami
+      remote_vars:
+        tags: tags.outputs.tag_map
+
+    # network creates a VPC and required resources to launch instances
+    network:
+      path: /definitions/tf13/vpc-new/
+      remote_vars:
+        tags: tags.outputs.tag_map
+
+    # deploy the application gateway
+    gateway:
+      path: /definitions/tf13/service
+      terraform_vars:
+        name: new-app-gateway
+        public_ip: true
+      remote_vars:
+        tags: tags.outputs.tag_map
+        subnets: network.outputs.public_subnets
+
+    # deploy the application
+    backend:
+      path: /definitions/tf13/service
+      terraform_vars:
+        name: new-app-backend
+      remote_vars:
+        tags: tags.outputs.tag_map
+        subnets: network.outputs.public_subnets
+
+  providers:
+    aws:
+      vars:
+        version: ">= 3.16.0"
+        region: {{ aws_region }}
+    'null':
+      vars:
+        version: ">= 3.0.0"
+    kubectl:
+      baseURL: https://github.com/gavinbunney/terraform-provider-kubectl/releases/download/v1.9.4
+      vars:
+        version: "1.9.4"
