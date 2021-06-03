@@ -28,7 +28,7 @@ module "service" {
   version = "2.15.0"
 
   name                        = format("%s-%s", var.deployment, var.name)
-  ami                         = "ami-03d5c68bab01f3496"
+  ami                         = data.aws_ami.service.id
   instance_type               = var.instance_type
   instance_count              = length(local.subnets) * local.prod_modifier
   associate_public_ip_address = false
